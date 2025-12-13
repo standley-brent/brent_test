@@ -25,10 +25,10 @@ class TestNumeralConverter(unittest.TestCase):
         self.assertEqual(converter.numeral_converter(3999), 'MMMCMXCIX')
 
     def test_out_of_range(self):
-        self.assertEqual(converter.numeral_converter(0), "Input number 0 is out of range. Please enter a number between 1 and 3999.")
-        self.assertEqual(converter.numeral_converter(4000), "Input number 4000 is out of range. Please enter a number between 1 and 3999.")
+        with self.assertRaises(IndexError): converter.numeral_converter(0)
+        with self.assertRaises(IndexError): converter.numeral_converter(4000)
 
     def test_wrong_type(self):
-        self.assertEqual(converter.numeral_converter(-5), "Input number -5 is out of range. Please enter a number between 1 and 3999.")
+        with self.assertRaises(IndexError): converter.numeral_converter(-5)
         with self.assertRaises(TypeError): converter.numeral_converter(3.5)
         with self.assertRaises(TypeError): converter.numeral_converter("ten")
