@@ -1,3 +1,5 @@
+# Dict of numerals
+# Dicts are ordered as of Python 3.7+ and this is Python 3.12
 numeral_dict = {
     1000: 'M',
     900: 'CM',
