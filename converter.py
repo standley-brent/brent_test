@@ -54,3 +54,10 @@ if __name__ == '__main__':
 
 # TODO: I'm not sure i'm even doing the right 400 responses, etc.
 # TODO: add preferred method with different functions and urls per type of request
+# TODO: add comments everywhere
+# TODO: add logging
+# TODO: add rate limiting
+# TODO: add password?
+# TODO: dockerize
+# TODO: comment code
+# TODO: explain everything in README
