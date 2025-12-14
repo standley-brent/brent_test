@@ -2,7 +2,6 @@ import unittest
 import converter
 
 class TestNumeralConverter(unittest.TestCase):
-    # TODO: test different types. decimals, strings, negatives
     def test_basic_conversion(self):
         self.assertEqual(converter.numeral_converter(1), 'I')
         self.assertEqual(converter.numeral_converter(5), 'V')
@@ -27,8 +26,8 @@ class TestNumeralConverter(unittest.TestCase):
     def test_out_of_range(self):
         with self.assertRaises(IndexError): converter.numeral_converter(0)
         with self.assertRaises(IndexError): converter.numeral_converter(4000)
+        with self.assertRaises(IndexError): converter.numeral_converter(-5)
 
     def test_wrong_type(self):
-        with self.assertRaises(IndexError): converter.numeral_converter(-5)
         with self.assertRaises(TypeError): converter.numeral_converter(3.5)
         with self.assertRaises(TypeError): converter.numeral_converter("ten")
