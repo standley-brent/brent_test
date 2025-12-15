@@ -1,5 +1,5 @@
 
-from numeral_dict import numeral_dict
+from utils.numeral_dict import numeral_dict
 
 
 def convert_to_roman(number_input):

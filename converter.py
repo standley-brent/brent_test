@@ -1,6 +1,6 @@
 from concurrent.futures import ProcessPoolExecutor
 from flask import Flask, jsonify, request
-from convert_to_roman import convert_to_roman
+from utils.convert_to_roman import convert_to_roman
 app = Flask(__name__)
 
 # Flask route to convert numeral
@@ -37,17 +37,21 @@ def numeral_converter():
         if min_val < lower_bound or max_val > upper_bound or min_val > max_val:
             return jsonify({'error': f'Invalid range. Ensure {lower_bound} <= min <= max <= {upper_bound}'}), 400
 
+        # Create list of numbers to convert
         numbers = list(range(min_val, max_val + 1))
 
+        # Use ProcessPoolExecutor for parallel conversion
         with ProcessPoolExecutor(max_workers=4) as executor:
             roman_numerals = list(executor.map(convert_to_roman, numbers))
 
+        # Build results
         results = [
             {'input': str(num), 'output': roman}
             for num, roman in zip(numbers, roman_numerals)
         ]
 
         return jsonify({'conversions': results})
+    return jsonify({'error': 'Missing required parameters. Provide either "query" or both "min" and "max".'}), 400
     
 if __name__ == '__main__':
     app.run(debug=True)
