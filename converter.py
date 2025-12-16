@@ -1,41 +1,76 @@
-# Dict of numerals
-# Dicts are ordered as of Python 3.7+ and this is Python 3.12
+import logging
+from concurrent.futures import ProcessPoolExecutor
+from flask import Flask, jsonify, request
+from utils.convert_to_roman import convert_to_roman
+from prometheus_flask_exporter import PrometheusMetrics
 
-numeral_dict = {
-    1000: 'M',
-    900: 'CM',
-    500: 'D',
-    400: 'CD',
-    100: 'C',
-    90: 'XC',
-    50: 'L',
-    40: 'XL',
-    10: 'X',
-    9: 'IX',
-    5: 'V',
-    4: 'IV',
-    1: 'I'
-}
+app = Flask(__name__)
+metrics = PrometheusMetrics(app)
+print("Registered routes:", [str(rule) for rule in app.url_map.iter_rules()])
+logging.basicConfig(level=logging.WARNING)
 
-def numeral_converter(number_input):
-    if not isinstance(number_input, int):
-        raise TypeError(f"Expected an integer, but received {type(number_input).__name__}")
-    roman_result = ''
+# Flask route to convert numeral
+@app.route('/romannumeral/', methods=['GET'])
+    
+def numeral_converter():
     lower_bound = 1
     upper_bound = 3999
-    if lower_bound <= number_input <= upper_bound:
-        # Looping until number_input is 0
-        while number_input > 0:
-            # Loop over each numeral in the dict, largest to smallest
-            for arabic_num, roman_num in numeral_dict.items():
-                # If the input number is larger than the arabic numeral
-                if number_input >= arabic_num:
-                    # Determine how many times the numeral fits into the input number
-                    floor_result = number_input // arabic_num
-                    # Subtract that value from the input number
-                    number_input = number_input - (floor_result * arabic_num)
-                    # Append the corresponding roman numeral to the result
-                    roman_result = roman_result + (roman_num * floor_result)
-        return roman_result
-    else:
-        raise IndexError(f"Input number {number_input} is out of range. Please enter a number between {lower_bound} and {upper_bound}.")
+    logging.info(f"Received request: {request.args}")
+
+    # 1. 'query' paramater given, single conversion wanted
+    query = request.args.get('query')
+    if query is not None:
+        try:
+            number_input = int(query)
+        except ValueError:
+            logging.error(f"Error: expected an integer, received {query}")
+            return jsonify({'error': 'Expected an integer'}), 400
+
+        if  lower_bound <= number_input <= upper_bound:
+            return jsonify({'input': query, 'output': convert_to_roman(number_input)})
+        else:
+            logging.error(f"Input number is out of range.")
+            return jsonify({'error': f"Input number {number_input} is out of range. Please enter a number between {lower_bound} and {upper_bound}."}), 400
+        
+        
+    # 2. 'min' & 'max' parameters given: range wanted
+    min_val = request.args.get('min')
+    max_val = request.args.get('max')
+
+    if min_val is not None and max_val is not None:
+        try:
+            min_val = int(min_val)
+            max_val = int(max_val)
+        except ValueError:
+            logging.error(f"Error: Min and Max must be integers: {query}")
+            return jsonify({'Error': 'Min and Max must be integers'}), 400
+
+        if min_val < lower_bound or max_val > upper_bound or min_val > max_val:
+            logging.error(f"Input number is out of range.")
+            return jsonify({'error': f'Invalid range. Ensure {lower_bound} <= min <= max <= {upper_bound}'}), 400
+
+        # Create list of numbers to convert
+        numbers = list(range(min_val, max_val + 1))
+
+        # Use ProcessPoolExecutor for parallel conversion
+        with ProcessPoolExecutor(max_workers=4) as executor:
+            roman_numerals = list(executor.map(convert_to_roman, numbers))
+
+        # Build results
+        results = [
+            {'input': str(num), 'output': roman}
+            for num, roman in zip(numbers, roman_numerals)
+        ]
+
+        return jsonify({'conversions': results})
+    logging.error(f"Error: Missing required parameters. Provide either 'query' or both 'min' and 'max'.")
+    return jsonify({'error': 'Missing required parameters. Provide either "query" or both "min" and "max".'}), 400
+
+if __name__ == '__main__':
+    app.run(debug=False, host='0.0.0.0',port=5001,use_reloader=False)
+
+# TODO: add comments everywhere
+# TODO: add rate limiting
+# TODO: dockerize
+# TODO: comment code
+# TODO: explain everything in README
