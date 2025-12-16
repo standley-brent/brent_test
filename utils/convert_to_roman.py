@@ -1,6 +1,4 @@
-
 from utils.numeral_dict import numeral_dict
-
 
 def convert_to_roman(number_input):
     roman_result = ''
@@ -13,6 +11,6 @@ def convert_to_roman(number_input):
                 floor_result = number_input // arabic_num
                 # Subtract that value from the input number
                 number_input = number_input - (floor_result * arabic_num)
-                # Append the corresponding roman numeral to the result
+                # Append the corresponding roman numeral to the result, however many times it fit
                 roman_result = roman_result + (roman_num * floor_result)
     return roman_result
