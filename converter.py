@@ -68,9 +68,3 @@ def numeral_converter():
 
 if __name__ == '__main__':
     app.run(debug=False, host='0.0.0.0',port=5001,use_reloader=False)
-
-# TODO: add comments everywhere
-# TODO: add rate limiting
-# TODO: dockerize
-# TODO: comment code
-# TODO: explain everything in README
