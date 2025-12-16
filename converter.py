@@ -7,7 +7,7 @@ from prometheus_flask_exporter import PrometheusMetrics
 app = Flask(__name__)
 metrics = PrometheusMetrics(app)
 print("Registered routes:", [str(rule) for rule in app.url_map.iter_rules()])
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.WARNING)
 
 # Flask route to convert numeral
 @app.route('/romannumeral/', methods=['GET'])
@@ -29,7 +29,7 @@ def numeral_converter():
         if  lower_bound <= number_input <= upper_bound:
             return jsonify({'input': query, 'output': convert_to_roman(number_input)})
         else:
-            logging.error(f"Input number {number_input} is out of range.")
+            logging.error(f"Input number is out of range.")
             return jsonify({'error': f"Input number {number_input} is out of range. Please enter a number between {lower_bound} and {upper_bound}."}), 400
         
         
@@ -46,7 +46,7 @@ def numeral_converter():
             return jsonify({'Error': 'Min and Max must be integers'}), 400
 
         if min_val < lower_bound or max_val > upper_bound or min_val > max_val:
-            logging.error(f"Input number {number_input} is out of range.")
+            logging.error(f"Input number is out of range.")
             return jsonify({'error': f'Invalid range. Ensure {lower_bound} <= min <= max <= {upper_bound}'}), 400
 
         # Create list of numbers to convert
