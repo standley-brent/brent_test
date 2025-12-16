@@ -1,7 +1,7 @@
 # brent_test
 ### Overview
 - API that converts arabic numbers to roman numerals, range 1:3999
-- API also accepts ranges in the form of min=1&max=100
+- API also accepts ranges in the form of `min=1&max=100`
 - Multithreaded
 - Dockerized
 - Contains monitoring, logging, and reporting. (Prometheus, Grafana)
