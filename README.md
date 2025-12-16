@@ -6,7 +6,7 @@
 - Dockerized
 - Contains monitoring, logging, and reporting. (Prometheus, Grafana)
 ### Sources
-- Used an [online calculator](https://www.calculatorsoup.com/calculators/conversions/roman-numeral-converter.php) to help make my test cases.
+- Used an [online calculator](https://www.calculatorsoup.com/calculators/conversions/roman-numeral-converter.php) to help make my test cases and think through my conversion algorithm.
 - Wikipedia page on [roman numerals](https://en.wikipedia.org/wiki/Roman_numerals)
 ### Tech Stack:
 - Python 3.12
