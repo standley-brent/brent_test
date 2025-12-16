@@ -68,6 +68,9 @@ curl "http://localhost:5001/romannumeral/?query=42"
 # Range conversion
 curl "http://localhost:5001/romannumeral/?min=1&max=10"
 ```
+**Grafana Login:**
+username: admin
+password: admin
 
 ### Preferred Solution:
 - According to the spec the solution needs a single endpoint that can determine whether the request is for a single number (query) or a range of numbers (min & max)
