@@ -16,9 +16,59 @@
 - Prometheus
 - Grafana
 ### Methodology:
-- 
+1. **Algorithm Design**: Created a greedy algorithm using a dictionary of Roman numeral values (largest to smallest). For each input number, subtract the largest possible Roman value and append the corresponding numeral until the number reaches zero.
+
+2. **API Design**: Built a single Flask endpoint that handles both single conversions (`query` parameter) and range conversions (`min` & `max` parameters) through conditional logic.
+
+3. **Parallel Processing**: Implemented `ProcessPoolExecutor` for range requests to convert multiple numbers concurrently, improving performance for large ranges.
+
+4. **Testing**: Used `unittest` framework with comprehensive test cases covering edge cases, invalid inputs, and range requests.
+
+5. **Monitoring**: Integrated Prometheus metrics to track API request counts, latency, and error rates. Grafana provides visualization dashboards.
+
+6. **Containerization**: Dockerized the Flask app alongside Prometheus and Grafana using Docker Compose for easy deployment and orchestration.
+
 ### Building and Running:
-- 
+
+**Prerequisites:**
+- Docker Desktop installed and running
+- Python 3.12+ (for local development)
+
+**Using Docker:**
+```bash
+# Clone the repository
+git clone https://github.com/standley-brent/brent_test.git
+cd brent_test
+
+# Start all services (Flask, Prometheus, Grafana)
+docker compose up --build
+
+# API available at: http://localhost:5001
+# Prometheus at: http://localhost:9090
+# Grafana at: http://localhost:3000 (admin/admin)
+```
+
+**Local Development:**
+```bash
+# Install dependencies
+pip install -r requirements.txt
+
+# Run the Flask app
+python converter.py
+
+# Run tests
+python -m unittest discover tests
+```
+
+**Example API Requests:**
+```bash
+# Single conversion
+curl "http://localhost:5001/romannumeral/?query=42"
+
+# Range conversion
+curl "http://localhost:5001/romannumeral/?min=1&max=10"
+```
+
 ### Preferred Solution:
 - According to the spec the solution needs a single endpoint that can determine whether the request is for a single number (query) or a range of numbers (min & max)
 - My solution to this is a single function with a big if..else statement to determine which parameters have been used.
